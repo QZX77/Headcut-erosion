@@ -1,0 +1,8 @@
+function flag_theta=CheckTheta(theta, theta_cr, fai, beta, cb, ws, n0, nl, kl, rou_s, A)
+%fai - angle of internal friction, beta - bed slope
+%check if the Van Rhee equation will have a root with the given Shields parameter
+
+delta=(rou_s-1000)/1000;
+aaa=sind(fai-beta)/sind(fai)-cb*ws*cosd(beta)*(nl-n0)*A/
+
+end
