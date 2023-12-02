@@ -22,4 +22,4 @@ x=Da*((y/Da-C)/K/F^A)^(1/B);
 
 dydx=K*F^A*B*(x/Da)^(B-1);
 An=-atan(dydx);        %in radians
-Ds=x+Bw/An;
+Ds=x+Bw/tan(An);

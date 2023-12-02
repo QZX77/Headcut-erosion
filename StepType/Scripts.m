@@ -1,5 +1,5 @@
 %plot the trajectory
-Da=0.099903;
+Da=0.010711;
 
 np=30;
 x=linspace(0, 0.5, np);
