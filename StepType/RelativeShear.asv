@@ -8,5 +8,4 @@ function [tauRel] = RelativeShear(Da, pis, tau, exps, coef)
 if nargin == 4
     coef = 0.025;
 end
-tau_max = 1000*9.8*Da*coef.*pis(:,1).^exps(1).*pis(:,2).^exps(2).*pis(:,3).^exps(3).*pis(:,4).^exps(4);
-tauRel = tau./tau_max;
+tau_max = 1000*9.8*Da*coef.*pis(:,1).^exp
