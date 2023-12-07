@@ -15,8 +15,8 @@ exps_ini = [-1.295, 0.026, 0.221, -1.062];
 coef_ini = 0.025;
 aofx_ini = 1;
 initialGuess = [exps_ini, coef_ini, aofx_ini];
-A = [-1, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0; 0, -1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0; 0, 0, -1, 0, 0, 0; 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0];      %限制参数的搜索范围
-b = [3; 0; 0.1; 0; 1; 0; 1; 10];        %被限制参数的允许最大值
+A = [-1, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0; 0, -1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0; 0, 0, -1, 0, 0, 0; 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, -1];      %限制参数的搜索范围
+b = [3; 0; 0.1; 0; 1; 0; -0.2; 0.2; 0];        %被限制参数的允许最大值
 
 % 进行优化（使用 MATLAB 优化工具箱中的函数，如 fmincon）
 optimizedParameters = fmincon(objectiveFunction, initialGuess, A, b);
@@ -37,7 +37,7 @@ yp = y.^optimizedAofx./(y.^optimizedAofx+1);
 
 zpp = zp.^optimizedAofx./(zp.^optimizedAofx+1);
 options = optimoptions('lsqcurvefit','Algorithm','trust-region-reflective');
-[a,~,~,exitflag,output] = lsqcurvefit(@tau_distribution, [0.6; 2.2], zpp, tauRelOptimized, [0;0], [Inf;Inf], options);
+[a,~,~,exitflag,output] = lsqcurvefit(@tau_distribution, [2.2; 0.6], zpp, tauRelOptimized, [0;0], [Inf;Inf], options);
 x=tau_distribution(a, yp);
 
 
@@ -56,7 +56,7 @@ function cost = optimizeRelativeShear(parameters, Da, pis, tau, zp)
     
     zpp = zp.^aofx./(zp.^aofx+1);       %把zp映射到(0, 1)区间
     options = optimoptions('lsqcurvefit','Algorithm','trust-region-reflective');
-    [a,~,~,exitflag,output] = lsqcurvefit(@tau_distribution, [0.6; 2.2], zpp, tauRelCalculated, [0;0], [Inf;10], options);
+    [a,~,~,exitflag,output] = lsqcurvefit(@tau_distribution, [2.2; 0.6], zpp, tauRelCalculated, [0;0], [Inf;Inf], options);
     
     tauRelPredicted=tau_distribution(a, zpp);
 
