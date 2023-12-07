@@ -16,7 +16,7 @@ coef_ini = 0.025;
 aofx_ini = 1;
 initialGuess = [exps_ini, coef_ini, aofx_ini];
 A = [-1, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0; 0, -1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0; 0, 0, -1, 0, 0, 0; 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, -1];      %限制参数的搜索范围
-b = [3; 0; 0.1; 0; 1; 0; -0.2; 0.2; 0];        %被限制参数的允许最大值
+b = [3; 0; 0.1; 0; 1; 0; -0.2; 0.8; 0];        %被限制参数的允许最大值
 
 % 进行优化（使用 MATLAB 优化工具箱中的函数，如 fmincon）
 optimizedParameters = fmincon(objectiveFunction, initialGuess, A, b);
@@ -45,6 +45,12 @@ plot(tauRelOptimized,zp,'ro');
 hold on;
 plot(x, y);
 
+ym=mean(tauRelOptimized);
+tauRelPredicted=tau_distribution(a, zpp);
+SS_res=sum((tauRelOptimized-tauRelPredicted).^2);
+SS_tot=sum((tauRelOptimized-ym).^2);
+R2=1-SS_res/SS_tot;
+    
 % 函数定义
 function cost = optimizeRelativeShear(parameters, Da, pis, tau, zp)
     exps = parameters(1:4);
@@ -60,8 +66,12 @@ function cost = optimizeRelativeShear(parameters, Da, pis, tau, zp)
     
     tauRelPredicted=tau_distribution(a, zpp);
 
-    % 计算成本（比如均方误差）
-    cost = mean((tauRelCalculated - tauRelPredicted).^2);
+    % 计算成本
+    %cost = mean((tauRelCalculated - tauRelPredicted).^2);  
+    ym=mean(tauRelCalculated);
+    SS_res=sum((tauRelCalculated-tauRelPredicted).^2);
+    SS_tot=sum((tauRelCalculated-ym).^2);
+    cost=SS_res/SS_tot;          %R2 is 1-cost
 end
 
 
