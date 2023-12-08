@@ -11,27 +11,26 @@ pis = data(:, 2:5);
 tau = data(:,6);
 zp = data(:, 7);
 
+Coef = 0.002;
 % 定义目标函数，用于优化 exps 和 coef
-objectiveFunction = @(parameters) optimizeRelativeShear(parameters, Da, pis, tau, zp);
+objectiveFunction = @(parameters) optimizeRelativeShear(parameters, Da, pis, tau, zp, Coef);
 
 % 初始参数猜测
 exps_ini = [-1.295, 0.026, 0.221, -1.062];
-coef_ini = 0.025;
 aofx_ini = 1;
-initialGuess = [exps_ini, coef_ini, aofx_ini];
-A = [-1, 0, 0, 0, 0, 0; 1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0; 0, -1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0; 0, 0, -1, 0, 0, 0; 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, -1];      %限制参数的搜索范围
-b = [3; 0; 0.1; 0; 1; 0; -0.2; 0.8; 0];        %被限制参数的允许最大值
+initialGuess = [exps_ini, aofx_ini];
+A = [-1, 0, 0, 0,  0; 1, 0, 0, 0, 0; 0, 1, 0, 0, 0; 0, -1, 0, 0, 0; 0, 0, 1, 0, 0; 0, 0, -1, 0, 0; 0, 0, 0, 1, 0; 0, 0, 0, 0, -1];      %限制参数的搜索范围
+b = [3; 0; 0.1; 0; 1; 0; -0.2; 0];        %被限制参数的允许最大值
 
 % 进行优化（使用 MATLAB 优化工具箱中的函数，如 fmincon）
 optimizedParameters = fmincon(objectiveFunction, initialGuess, A, b);
 
-% 优化后的 exps 和 coef
+% 优化后的 exps 和 Aofx
 optimizedExps = optimizedParameters(1:4);
-optimizedCoef = optimizedParameters(5);
-optimizedAofx = optimizedParameters(6);
+optimizedAofx = optimizedParameters(5);
 
 % 使用优化后的参数计算 tauRel
-tauRelOptimized = RelativeShear(Da, pis, tau, optimizedExps, optimizedCoef);
+tauRelOptimized = RelativeShear(Da, pis, tau, optimizedExps, Coef);
 
 % 模型评估
 % 计算 R? 或其他统计指标
@@ -56,11 +55,10 @@ SS_tot=sum((tauRelOptimized-ym).^2);
 R2=1-SS_res/SS_tot;
     
 % 函数定义
-function cost = optimizeRelativeShear(parameters, Da, pis, tau, zp)
+function cost = optimizeRelativeShear(parameters, Da, pis, tau, zp, Coef)
     exps = parameters(1:4);
-    coef = parameters(5);
-    aofx = parameters(6);
-    tauRelCalculated = RelativeShear(Da, pis, tau, exps, coef);
+    aofx = parameters(5);
+    tauRelCalculated = RelativeShear(Da, pis, tau, exps, Coef);
     
     % 这里需要定义一个合适的预测模型
     
