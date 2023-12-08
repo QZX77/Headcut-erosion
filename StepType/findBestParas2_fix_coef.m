@@ -11,7 +11,7 @@ pis = data(:, 2:5);
 tau = data(:,6);
 zp = data(:, 7);
 
-Coef = 0.002;
+Coef = 0.0028;
 % 定义目标函数，用于优化 exps 和 coef
 objectiveFunction = @(parameters) optimizeRelativeShear(parameters, Da, pis, tau, zp, Coef);
 
@@ -20,7 +20,7 @@ exps_ini = [-1.295, 0.026, 0.221, -1.062];
 aofx_ini = 1;
 initialGuess = [exps_ini, aofx_ini];
 A = [-1, 0, 0, 0,  0; 1, 0, 0, 0, 0; 0, 1, 0, 0, 0; 0, -1, 0, 0, 0; 0, 0, 1, 0, 0; 0, 0, -1, 0, 0; 0, 0, 0, 1, 0; 0, 0, 0, 0, -1];      %限制参数的搜索范围
-b = [3; 0; 0.1; 0; 1; 0; -0.2; 0];        %被限制参数的允许最大值
+b = [3; 0; 0.1; 0; 1; 0; -0.1; 0];        %被限制参数的允许最大值
 
 % 进行优化（使用 MATLAB 优化工具箱中的函数，如 fmincon）
 optimizedParameters = fmincon(objectiveFunction, initialGuess, A, b);
